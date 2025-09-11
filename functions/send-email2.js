@@ -25,6 +25,7 @@ exports.handler = async (event, context) => {
   const mailOptions = {
     from: 'radiology.primediagnostics@gmail.com',
     to: 'radiology.primediagnostics@gmail.com',
+
     subject: `Appointment for ${service} - ${name}`,
     html: `
       <h2>New Appointment Request</h2>
