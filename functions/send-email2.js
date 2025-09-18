@@ -14,6 +14,8 @@ exports.handler = async (event, context) => {
   const verifyRes = await fetch(verifyURL, { method: 'POST' })
   const verifyData = await verifyRes.json()
 
+  console.log('reCAPTCHA verify:', verifyData)
+
   if (!verifyData.success || verifyData.score < 0.5) {
     return { statusCode: 400, body: 'reCAPTCHA failed. Please try again.' }
   }
