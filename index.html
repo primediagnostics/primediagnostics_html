@@ -850,7 +850,6 @@
                         id="formError"
                         style="color: red; margin-top: 10px"
                       ></div>
-                      js Copy code
                     </div>
                   </div>
                 </div>
@@ -1899,9 +1898,20 @@
         <div class="modal-content">
           <button class="modal-close" onclick="closeModal()">×</button>
 
-          <form action="/.netlify/functions/send-email" method="POST">
+          <form
+            id="doctorForm"
+            action="/.netlify/functions/send-email"
+            method="POST"
+          >
             <input type="hidden" name="dzToDo" value="Appointment" />
             <input type="hidden" name="reCaptchaEnable" value="0" />
+            <input
+              type="text"
+              name="website"
+              style="display: none"
+              tabindex="-1"
+              autocomplete="off"
+            />
             <input
               type="hidden"
               name="dzOther[DoctorName]"
@@ -1990,6 +2000,7 @@
               </div>
             </div>
           </form>
+          <div id="formError1" style="color: red; margin-top: 10px"></div>
         </div>
       </div>
 
@@ -3071,6 +3082,27 @@
           if (!response.ok) {
             const errorMsg = await response.text();
             document.getElementById("formError").innerText = errorMsg; // show error
+          } else {
+            window.location.href = "/thank-you.html"; // success
+          }
+        });
+    </script>
+    <script>
+      document
+        .getElementById("doctorForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+
+          const response = await fetch("/.netlify/functions/send-email", {
+            method: "POST",
+            body: new URLSearchParams(formData),
+          });
+
+          if (!response.ok) {
+            const errorMsg = await response.text();
+            document.getElementById("formError1").innerText = errorMsg; // show error
           } else {
             window.location.href = "/thank-you.html"; // success
           }

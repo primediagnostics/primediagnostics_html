@@ -11,6 +11,24 @@ exports.handler = async (event, context) => {
   const phone = params.get('dzNum')
   const datetime = params.get('dzOther[DateTime]')
   const doctorName = params.get('dzOther[DoctorName]')
+  const honeypot = params.get('website')
+
+  if (honeypot) {
+    return { statusCode: 400, body: 'Spam detected' }
+  }
+
+  if (
+    !name ||
+    !/^[A-Za-z\s]{3,50}$/.test(name) ||
+    !email ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    !phone ||
+    !/^\d{10}$/.test(phone) ||
+    !datetime ||
+    !doctorName
+  ) {
+    return { statusCode: 400, body: 'Invalid form submission' }
+  }
 
   // ✅ Use Gmail SMTP
   const transporter = nodemailer.createTransport({
