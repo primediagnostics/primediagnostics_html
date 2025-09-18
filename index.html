@@ -686,6 +686,7 @@
                   <div class="form-wrapper">
                     <div class="form-body">
                       <form
+                        id="appointmentForm"
                         action="/.netlify/functions/send-email2"
                         class="dzForm"
                         method="POST"
@@ -702,6 +703,14 @@
                           name="reCaptchaEnable"
                           value="0"
                         />
+                        <input
+                          type="text"
+                          name="website"
+                          style="display: none"
+                          tabindex="-1"
+                          autocomplete="off"
+                        />
+
                         <div class="row g-3 align-items-center">
                           <div
                             class="col-xl-4 col-sm-6 m-b10 wow fadeInUp"
@@ -837,6 +846,11 @@
                           </div>
                         </div>
                       </form>
+                      <div
+                        id="formError"
+                        style="color: red; margin-top: 10px"
+                      ></div>
+                      js Copy code
                     </div>
                   </div>
                 </div>
@@ -3039,6 +3053,28 @@
           modal2.style.display = "none";
         }
       };
+    </script>
+
+    <script>
+      document
+        .getElementById("appointmentForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+
+          const response = await fetch("/.netlify/functions/send-email2", {
+            method: "POST",
+            body: new URLSearchParams(formData),
+          });
+
+          if (!response.ok) {
+            const errorMsg = await response.text();
+            document.getElementById("formError").innerText = errorMsg; // show error
+          } else {
+            window.location.href = "/thank-you.html"; // success
+          }
+        });
     </script>
   </body>
 </html>

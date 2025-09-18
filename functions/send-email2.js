@@ -12,13 +12,31 @@ exports.handler = async (event, context) => {
   const datetime = params.get('dzOther[DateTime]')
   //   const doctorName = params.get('dzOther[DoctorName]')
   const service = params.get('dzService')
+  const honeypot = params.get('website')
+
+  if (honeypot) {
+    return { statusCode: 400, body: 'Spam detected' }
+  }
+
+  if (
+    !name ||
+    !/^[A-Za-z\s]{3,50}$/.test(name) ||
+    !email ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    !phone ||
+    !/^\d{10}$/.test(phone) ||
+    !datetime ||
+    !service
+  ) {
+    return { statusCode: 400, body: 'Invalid form submission' }
+  }
 
   // ✅ Use Gmail SMTP
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'radiology.primediagnostics@gmail.com',
-      pass: 'aswb oodp grco uyvk' // from https://myaccount.google.com/apppasswords
+      pass: 'aswb oodp grco uyvk'
     }
   })
 
