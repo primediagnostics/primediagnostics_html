@@ -6,6 +6,18 @@ exports.handler = async (event, context) => {
   }
 
   const params = new URLSearchParams(event.body)
+  const token = params.get('recaptchaToken') // ✅ get token
+
+  // 🔹 Verify with Google
+  const secret = process.env.RECAPTCHA_SECRET // keep in Netlify env
+  const verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`
+  const verifyRes = await fetch(verifyURL, { method: 'POST' })
+  const verifyData = await verifyRes.json()
+
+  if (!verifyData.success || verifyData.score < 0.5) {
+    return { statusCode: 400, body: 'reCAPTCHA failed. Please try again.' }
+  }
+
   const name = params.get('dzName')
   const email = params.get('dzEmail')
   const phone = params.get('dzNum')

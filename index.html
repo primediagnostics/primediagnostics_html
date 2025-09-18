@@ -74,6 +74,9 @@
     <link rel="stylesheet" type="text/css" href="css/magnific-popup.min.css" />
 
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lf9xc0rAAAAAGZ4mmR9rm0Wffbfcu3I6HmTgdHM"></script>
+
     <style>
       .table-container {
         margin-top: 20px;
@@ -3087,12 +3090,13 @@
           }
         });
     </script>
-    <script>
+    <!-- <script>
       document
         .getElementById("doctorForm")
         .addEventListener("submit", async function (e) {
           e.preventDefault();
 
+          
           const formData = new FormData(this);
 
           const response = await fetch("/.netlify/functions/send-email", {
@@ -3106,6 +3110,71 @@
           } else {
             window.location.href = "/thank-you.html"; // success
           }
+        });
+    </script> -->
+    <script>
+      document
+        .getElementById("appointmentForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          // Get recaptcha token first
+          grecaptcha.ready(async function () {
+            const token = await grecaptcha.execute(
+              "6Lf9xc0rAAAAAGZ4mmR9rm0Wffbfcu3I6HmTgdHM",
+              {
+                action: "submit",
+              }
+            );
+
+            const formData = new FormData(e.target);
+            formData.append("recaptchaToken", token); // ✅ send token to backend
+
+            const response = await fetch("/.netlify/functions/send-email2", {
+              method: "POST",
+              body: new URLSearchParams(formData),
+            });
+
+            if (!response.ok) {
+              const errorMsg = await response.text();
+              document.getElementById("formError").innerText = errorMsg;
+            } else {
+              window.location.href = "/thank-you.html";
+            }
+          });
+        });
+    </script>
+
+    <script>
+      document
+        .getElementById("doctorForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          // Get recaptcha token first
+          grecaptcha.ready(async function () {
+            const token = await grecaptcha.execute(
+              "6Lf9xc0rAAAAAGZ4mmR9rm0Wffbfcu3I6HmTgdHM",
+              {
+                action: "submit",
+              }
+            );
+
+            const formData = new FormData(e.target);
+            formData.append("recaptchaToken", token); // ✅ send token to backend
+
+            const response = await fetch("/.netlify/functions/send-email", {
+              method: "POST",
+              body: new URLSearchParams(formData),
+            });
+
+            if (!response.ok) {
+              const errorMsg = await response.text();
+              document.getElementById("formError1").innerText = errorMsg;
+            } else {
+              window.location.href = "/thank-you.html";
+            }
+          });
         });
     </script>
   </body>
